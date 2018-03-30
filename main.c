@@ -11,7 +11,7 @@ IplImage* edges = 0;
 int x_sel, y_sel;
 
 // рисуем область выделения
-void drawSelected(IplImage* img, int x, int y, int x1, int y1, int add_value = 200) {
+void selectROI(IplImage* img, int x, int y, int x1, int y1, int add_value = 200) {
 	int width, height, x_beg, y_beg;
 	width = abs(x - x1);
 	height = abs(y - y1);
@@ -27,8 +27,7 @@ void drawSelected(IplImage* img, int x, int y, int x1, int y1, int add_value = 2
 }
 
 // обработчик событий от мышки
-void myMouseCallback( int event, int x, int y, int flags, void* param )
-{
+void myMouseCallback( int event, int x, int y, int flags, void* param ) {
 	IplImage* img = (IplImage*) param;
 
 	switch( event ) {
@@ -41,16 +40,18 @@ void myMouseCallback( int event, int x, int y, int flags, void* param )
 		break;
 
 	case CV_EVENT_LBUTTONUP:
-		drawSelected(img, x_sel, y_sel, x, y);
-		cvShowImage("ROI", image);
+		selectROI(img, x_sel, y_sel, x, y);
+		gray = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1 );
+		edges = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1 );
+		cvCvtColor(image, gray, CV_RGB2GRAY);
+		cvCanny(gray, edges, 10, 100, 3);
 		cvShowImage("cvCanny", edges );
 		cvResetImageROI(image);
 		break;
 	}
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 	// имя картинки задаётся первым параметром
 	const char* filename = argc == 2 ? argv[1] : "Image0.jpg";
 	// получаем картинку
@@ -67,16 +68,10 @@ int main(int argc, char* argv[])
 	// вешаем обработчик мышки
 	cvSetMouseCallback( "original", myMouseCallback, (void*) image);
 
-	gray = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1 );
-	edges = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1 );
-
-	cvCvtColor(image, gray, CV_RGB2GRAY);
-
 	// получаем границы
         cvCanny(gray, edges, 10, 100, 3);
 
-	while(1)
-	{
+	while(1) {
 		// показываем картинки
 		cvCopyImage( image, src );
 		cvShowImage( "original", src );
