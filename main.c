@@ -5,6 +5,9 @@
 
 IplImage* image = 0;
 IplImage* src = 0;
+IplImage* gray = 0;
+IplImage* edges = 0;
+
 int x_sel, y_sel;
 
 // рисуем область выделения
@@ -40,6 +43,7 @@ void myMouseCallback( int event, int x, int y, int flags, void* param )
 	case CV_EVENT_LBUTTONUP:
 		drawSelected(img, x_sel, y_sel, x, y);
 		cvShowImage("ROI", image);
+		cvShowImage("cvCanny", edges );
 		cvResetImageROI(image);
 		break;
 	}
@@ -63,9 +67,17 @@ int main(int argc, char* argv[])
 	// вешаем обработчик мышки
 	cvSetMouseCallback( "original", myMouseCallback, (void*) image);
 
+	gray = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1 );
+	edges = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1 );
+
+	cvCvtColor(image, gray, CV_RGB2GRAY);
+
+	// получаем границы
+        cvCanny(gray, edges, 10, 100, 3);
+
 	while(1)
 	{
-		// показываем картинку
+		// показываем картинки
 		cvCopyImage( image, src );
 		cvShowImage( "original", src );
 
@@ -79,7 +91,8 @@ int main(int argc, char* argv[])
 	// освобождаем ресурсы
 	cvReleaseImage(&image);
 	cvReleaseImage(&src);
+	cvReleaseImage(&edges);
 	// удаляем окно
-	cvDestroyWindow("original");
+	cvDestroyAllWindows();
 	return 0;
 }
