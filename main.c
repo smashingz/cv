@@ -1,6 +1,7 @@
 #include <cv.h>
 #include <highgui.h>
 #include <stdlib.h>
+#include <imgproc/imgproc_c.h>
 #include <stdio.h>
 
 IplImage* image = 0;
@@ -46,6 +47,23 @@ void myMouseCallback( int event, int x, int y, int flags, void* param ) {
 		cvCvtColor(image, gray, CV_RGB2GRAY);
 		cvCanny(gray, edges, 10, 100, 3);
 		cvShowImage("cvCanny", edges );
+		CvChain* chain = 0;
+		CvMemStorage* storage = 0;
+		storage = cvCreateMemStorage(0);
+		cvFindContours(edges, storage, (CvSeq**)(&chain), sizeof(*chain), CV_RETR_EXTERNAL, CV_CHAIN_CODE);
+		FILE * fp;
+		fp = fopen ("out.txt", "w");
+		for (; chain != NULL; chain = (CvChain*)chain->h_next) {
+			CvSeqReader reader;
+			int i, total = chain->total;
+			cvStartReadSeq((CvSeq*)chain, &reader, 0);
+			fprintf(fp, "--------------------chain\n");
+			for (i = 0; i<total; i++) {
+				char code;
+				CV_READ_SEQ_ELEM(code, reader);
+				fprintf(fp, "%d", code);
+			}
+		}
 		cvResetImageROI(image);
 		break;
 	}

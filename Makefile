@@ -1,5 +1,5 @@
 CC              := g++
-CFLAGS          := -I/usr/include/opencv -L/usr/local/lib -Wall -g
+CFLAGS          := -I/usr/include/opencv -I/usr/include/opencv2 -L/usr/local/lib -Wall -g
 OBJECTS         := 
 LIBRARIES       := -lopencv_core -lopencv_imgproc -lopencv_highgui
 
