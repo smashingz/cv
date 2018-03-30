@@ -21,7 +21,6 @@ void drawSelected(IplImage* img, int x, int y, int x1, int y1, int add_value = 2
 		y_beg = x1 < x ? y1 : y;
 	}
 	cvSetImageROI(img, cvRect(x_beg, y_beg, width, height));
-	cvAddS(img, cvScalar(add_value), image);
 }
 
 // обработчик событий от мышки
@@ -29,8 +28,7 @@ void myMouseCallback( int event, int x, int y, int flags, void* param )
 {
 	IplImage* img = (IplImage*) param;
 
-	switch( event )
-	{
+	switch( event ) {
 	case CV_EVENT_MOUSEMOVE:
 		break;
 
@@ -41,8 +39,8 @@ void myMouseCallback( int event, int x, int y, int flags, void* param )
 
 	case CV_EVENT_LBUTTONUP:
 		drawSelected(img, x_sel, y_sel, x, y);
-		cvResetImageROI(image);
 		cvShowImage("ROI", image);
+		cvResetImageROI(image);
 		break;
 	}
 }

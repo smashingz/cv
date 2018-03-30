@@ -1,5 +1,5 @@
 CC              := g++
-CFLAGS          := -I/usr/include/opencv -L/usr/local/lib -Wall
+CFLAGS          := -I/usr/include/opencv -L/usr/local/lib -Wall -g
 OBJECTS         := 
 LIBRARIES       := -lopencv_core -lopencv_imgproc -lopencv_highgui
 
@@ -8,7 +8,7 @@ LIBRARIES       := -lopencv_core -lopencv_imgproc -lopencv_highgui
 all: test
 
 test: 
-	$(CC) $(CFLAGS) -o test.out main.cpp $(LIBRARIES)
+	$(CC) $(CFLAGS) -o test.out main.c $(LIBRARIES)
         
 clean:
 	rm -f *.o *.out
