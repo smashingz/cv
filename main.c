@@ -10,6 +10,7 @@ IplImage* gray = 0;
 IplImage* edges = 0;
 
 int x_sel, y_sel;
+int outfile_num = 0;
 
 // рисуем область выделения
 void selectROI(IplImage* img, int x, int y, int x1, int y1, int add_value = 200) {
@@ -30,6 +31,7 @@ void selectROI(IplImage* img, int x, int y, int x1, int y1, int add_value = 200)
 // обработчик событий от мышки
 void myMouseCallback( int event, int x, int y, int flags, void* param ) {
 	IplImage* img = (IplImage*) param;
+	char file_name[] = "";
 
 	switch( event ) {
 	case CV_EVENT_MOUSEMOVE:
@@ -55,7 +57,9 @@ void myMouseCallback( int event, int x, int y, int flags, void* param ) {
 		storage = cvCreateMemStorage(0);
 		cvFindContours(edges, storage, (CvSeq**)(&chain), sizeof(*chain), CV_RETR_EXTERNAL, CV_CHAIN_CODE);
 		FILE * fp;
-		fp = fopen ("out.txt", "w");
+		sprintf(file_name, "out_%d.txt", outfile_num);
+		outfile_num++;
+		fp = fopen (file_name, "w");
 		for (; chain != NULL; chain = (CvChain*)chain->h_next) {
 			CvSeqReader reader;
 			int i, total = chain->total;
@@ -68,6 +72,7 @@ void myMouseCallback( int event, int x, int y, int flags, void* param ) {
 			}
 		}
 		cvResetImageROI(image);
+		fclose(fp);
 		break;
 	}
 }
