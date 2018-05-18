@@ -41,6 +41,9 @@ void myMouseCallback( int event, int x, int y, int flags, void* param ) {
 		break;
 
 	case CV_EVENT_LBUTTONUP:
+		if ((x - x_sel == 0) && (y - y_sel == 0)) {
+			break;
+		}
 		selectROI(img, x_sel, y_sel, x, y);
 		gray = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1 );
 		edges = cvCreateImage( cvGetSize(image), IPL_DEPTH_8U, 1 );
